@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "const.h"
+
 
 /**
  * @brief boxS do substitution of bits

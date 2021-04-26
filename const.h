@@ -3,7 +3,6 @@
 
 #include <inttypes.h>
 #include <stdint.h>
-#include <float.h>
 
 const __uint128_t BITS_PIVOTED = 0x1fffffffffffffff;
 

@@ -15,15 +15,22 @@ extern const __uint128_t BITS_PIVOTED;
 extern const uint32_t WORDS[6];
 
 /**
- * @brief SUBS is an array of substitution, 
+ * @brief SUBS is an array of substitution
  * each cage of table contains 
  * corresponding bit position.
  */
 extern const uint16_t SUBS[16];
 
 /**
+ * @brief REV_SUBS is an array of reverse
+ * of substitution each cage contains 
+ * conrresponding bit of substited.
+ */
+extern const uint16_t REV_SUBS[16];
+
+/**
  * @brief PERM is an array of permutation 
- *, each cage of table contains the position
+ * each cage of table contains the position
  * of the bit to permute.
  */
 extern const uint8_t PERM[24];

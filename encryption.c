@@ -1,5 +1,4 @@
 #include "encryption.h"
-#include "const.h"
 
 uint32_t boxS(uint32_t state)
 {

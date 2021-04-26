@@ -1,6 +1,6 @@
 #include "const.h"
 
-const __uint128_t BITS_PIVOTED = 0x1fffffffffffffff;
+const __uint128_t BITS_PIVOTED = 0xffffffffffffffff;
 
 const uint32_t WORDS[6] = { 
                             0xf,    0xf0,    0xf00, 

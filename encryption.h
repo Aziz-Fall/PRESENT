@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "const.h"
-
+#include "uint80_t.h"
 
 /**
  * @brief boxS do substitution of bits

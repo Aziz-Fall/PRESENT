@@ -39,6 +39,34 @@ void init_key(uint32_t K, uint80_t *int80)
     }
 }
 
+void updateKey(uint80_t *K, int i)
+{
+    rotate_bits(K);
+    K->tab[0].b = SUBS[K->tab[0].b];
+    int bit_substitution = 0;
+    bit_substitution |= (K->tab[15].b << 4);
+    bit_substitution |= (0x8 & K->tab[16].b);
+    bit_substitution >>= 3;
+    bit_substitution ^= i;
+    uint8_t k_15 = (bit_substitution & 0x1);
+    k_15 <<= 3;
+    bit_substitution >>= 1;
+    K->tab[15].b = bit_substitution & 0xf;
+    K->tab[16].b = (K->tab[16].b & 0x7) | k_15;
+}
+
+uint32_t get_sub_key(uint80_t *K)
+{
+    uint32_t sub_key = 0;
+    for( int i = 10; i < 16; i++)
+    {
+        sub_key |= K->tab[i].b;
+        sub_key <<= 4; 
+    }
+
+    return (sub_key >>= 4);
+}
+
 void rotate_bits(uint80_t *K)
 {
     uint64_t left_bits = 0;
@@ -112,7 +140,7 @@ void rotate_bits(uint80_t *K)
   0    1    2    3   4        5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
 1000 0000 0000 0000 0000 -  0000 0000 0000 0000 0000 0000 0000 0000 0000 0111 1001 1010 0101 0101 1011
   8                                                                       7    9    10    5   5    11
-******** 3 ième tours ************
+******** 4 ième tours ************
   0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
 0011 0100 1010 1011 0111 - 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 1111
   3   4    10   11   7                                                                            15
@@ -130,6 +158,9 @@ initiale
 1111 0011 0100 1010 1011 0111
 
 1111 0011 0100 1010 1011 0111 0000
+
+1 1 0 0 - 1 1 0 1 - 0 0 1 0 - 1 0 1 0 - 1 1 0 1 -    1 1 0 0
+                                                   19 18  17  16
 */
 
 void offset(uint80_t *K, int p)

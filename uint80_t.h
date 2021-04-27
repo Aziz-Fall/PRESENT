@@ -64,4 +64,19 @@ void rotate_bits(uint80_t *K);
  */
 void offset(uint80_t *K, int p);
 
+/**
+ * @brief Update the master key after a lap
+ * @param K master key
+ * @param i lap
+ */
+void updateKey(uint80_t *K, int i);
+
+/**
+ * @brief Get the sub key of the master key
+ * 
+ * @param K master key
+ * @return uint32_t sub key
+ */
+uint32_t get_sub_key(uint80_t *K);
+
 #endif

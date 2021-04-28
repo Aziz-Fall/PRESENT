@@ -1,5 +1,5 @@
-#ifndef UINT80_T_H
-#define UINT80_T_H
+#ifndef MAIN_KEY_H
+#define MAIN_KEY_H
 
 #include <stdint.h>
 #include <stdio.h>
@@ -14,18 +14,19 @@ typedef struct uint4_t
 } uint4_t;
 
 /**
- * @brief uint80_t represent an integer
+ * @brief main_key represent an integer
  * of 80 bits.
  * 
  */
-typedef struct uint80_t 
+typedef struct main_key 
 {
     /**
      * @brief Array containing 80 bits
      */
     uint4_t tab[20];
+    uint32_t sub_key[12];
 
-}uint80_t;
+}main_key;
 
 /**
  * @brief init the array tab by putting 
@@ -34,27 +35,27 @@ typedef struct uint80_t
  * @param K master key
  * @param int80 
  */
-void init_key(uint32_t K, uint80_t *int80);
+void init_key(uint32_t K, main_key *int80);
 
 /**
- * @brief Allocate a memory for type uint80_t;
- * @return uint80_t* 
+ * @brief Allocate a memory for type main_key;
+ * @return main_key* 
  */
-uint80_t *init();
+main_key *init();
 
 /**
  * @brief print each value of the array 
- * uint80_t
+ * main_key
  * @param int80 
  */
-void print_key(uint80_t int80);
+void print_key(main_key int80);
 
 /**
  * @brief rotate the bit of the key 
  * of 61 positons
  * @param *K master 
  */
-void rotate_bits(uint80_t *K);
+void rotate_bits(main_key *K);
 
 /**
  * @brief shift the key to p position
@@ -62,21 +63,21 @@ void rotate_bits(uint80_t *K);
  * @param K key
  * @param p position 
  */
-void offset(uint80_t *K, int p);
+void offset(main_key *K, int p);
 
 /**
  * @brief Update the master key after a lap
  * @param K master key
  * @param i lap
  */
-void updateKey(uint80_t *K, int i);
+void updateKey(main_key *K, int i);
 
 /**
- * @brief Get the sub key of the master key
+ * @brief Init the sub keys of the 
+ * main Key K
  * 
- * @param K master key
- * @return uint32_t sub key
+ * @param K main Key.
  */
-uint32_t get_sub_key(uint80_t *K);
+void init_sub_key(main_key *K);
 
 #endif

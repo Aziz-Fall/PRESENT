@@ -1,11 +1,38 @@
-#include "uint80_t.h"
+#include "main_key.h"
 #include "const.h"
 #include <stdlib.h>
 #include <errno.h>
 
-uint80_t *init()
+/**
+ * @brief Get the sub key of the master key
+ * 
+ * @param K master key
+ * @return uint32_t sub key
+ */
+uint32_t get_sub_key(main_key *K)
 {
-    uint80_t *key = malloc(sizeof(uint80_t));
+    uint32_t sub_key = 0;
+    for( int i = 10; i < 16; i++)
+    {
+        sub_key |= K->tab[i].b;
+        sub_key <<= 4; 
+    }
+
+    return (sub_key >> 4);
+}
+
+void init_sub_key(main_key *K)
+{
+  for( int i = 1; i < 12; i++ )
+  {
+    K->sub_key[i] = get_sub_key(K);
+    updateKey(K, i);
+  }
+}
+
+main_key *init()
+{
+    main_key *key = malloc(sizeof(main_key));
 
     if( !key )
     {
@@ -16,7 +43,7 @@ uint80_t *init()
     return key;
 }
 
-void print_key(uint80_t int80)
+void print_key(main_key int80)
 {
     for( uint8_t i = 0; i < 20; i++)
     {
@@ -24,7 +51,7 @@ void print_key(uint80_t int80)
     }
 }
 
-void init_key(uint32_t K, uint80_t *int80)
+void init_key(uint32_t K, main_key *int80)
 {
     for( uint8_t i = 0; i < 20; i++ )
     {
@@ -36,38 +63,34 @@ void init_key(uint32_t K, uint80_t *int80)
         {
             int80->tab[i].b = 0x0;
         }
+        if( i < 12)
+        {
+          int80->sub_key[i] = 0x0;
+        }
     }
 }
 
-void updateKey(uint80_t *K, int i)
+void updateKey(main_key *K, int i)
 {
     rotate_bits(K);
+    // substitution.
     K->tab[0].b = SUBS[K->tab[0].b];
-    int bit_substitution = 0;
-    bit_substitution |= (K->tab[15].b << 4);
-    bit_substitution |= (0x8 & K->tab[16].b);
-    bit_substitution >>= 3;
-    bit_substitution ^= i;
-    uint8_t k_15 = (bit_substitution & 0x1);
+
+    int bit_substitution = 0x0;
+    bit_substitution |= (K->tab[15].b << 1);
+    bit_substitution |= (0x8 & K->tab[16].b) >> 3;
+
+    bit_substitution ^=  i;
+    int k_15 = (bit_substitution & 0x1);
     k_15 <<= 3;
     bit_substitution >>= 1;
     K->tab[15].b = bit_substitution & 0xf;
     K->tab[16].b = (K->tab[16].b & 0x7) | k_15;
+    
 }
 
-uint32_t get_sub_key(uint80_t *K)
-{
-    uint32_t sub_key = 0;
-    for( int i = 10; i < 16; i++)
-    {
-        sub_key |= K->tab[i].b;
-        sub_key <<= 4; 
-    }
 
-    return (sub_key >>= 4);
-}
-
-void rotate_bits(uint80_t *K)
+void rotate_bits(main_key *K)
 {
     uint64_t left_bits = 0;
     uint32_t right_bits = 0;
@@ -99,8 +122,8 @@ void rotate_bits(uint80_t *K)
     right_bits = (right_bits << 1) | _left;
 
     // Use 60 bits
-    left_bits <<= 4;
-    left_bits >>= 4;
+    // left_bits <<= 4;
+    // left_bits >>= 4;
 
     for( int i = 4; i >= 0; i-- )
     {
@@ -116,44 +139,55 @@ void rotate_bits(uint80_t *K)
 }
 
 /*
+
+******** 0 ième tours ************
   0    1    2    3   4
 0000 0000 0000 0000 0001
-
+                     1
   5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
 1110 0110 1001 0101 0110 1110 0000 0000 0000 0000 0000 0000 0000 0000 0000
  14   6    9    5    6    14
 1110 0110 1001 0101 0110 1110
 
-******** 2 ième tours ************
-
-  0    1    2    3   4
-0000 0000 0000 0000 0001
-  5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
-1110 0110 1001 0101 0110 1110 0000 0000 0000 0000 0000 0000 0000 0000 0000
+******** 1 ième tours ************
 
    0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
  0000 0000 0000 0000 0000 - 0000 0000 0000 0000 0011 1100 1101 0010 1010 1101 1100 0000 0000 0000 0000
                                                  3    12   13   2    10   13   12   
 
-******** 3 ième tours ************
+******** 2 ième tours ************
 
   0    1    2    3   4        5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
 1000 0000 0000 0000 0000 -  0000 0000 0000 0000 0000 0000 0000 0000 0000 0111 1001 1010 0101 0101 1011
   8                                                                       7    9    10    5   5    11
-******** 4 ième tours ************
-  0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
-0011 0100 1010 1011 0111 - 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 1111
-  3   4    10   11   7                                                                            15
+******** 3 ième tours ************
+
+  0    1    2    3   4        5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
+0011 0100 1010 1011 0111 -  0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 1111
+ 3    4    10   11    7                                                                            15
+
 
 ******** 4 ième tours ************
   0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
 0000 0000 0000 0001 1110 - 0110 1001 0101 0110 1110 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
                 1   14      6    9    5    6    14
- 
+  0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
+0000 0000 0000 0001 1110 - 0110 1001 0101 0110 1110 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
+
 ******** 5 ième tours ************
   0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
 0000 0000 0000 0000 0000 - 0000 0000 0000 0011 1100 1101 0010 1010 1101 1100 0000 0000 0000 0000 0000
                                             3   12   13    2   10  13    12
+
+******** 6 ième tours ************
+  0    1    2    3   4       5    6    7    8   9    10   11   12   13   14   15   16   17   18   19
+0000 0000 0000 0000 0000 - 0000 0000 0000 0111 1001 1010 0101 0101 1011 1000 0000 0000 0000 0000 0000
+                                            7   9    10   5    5    11   8
+
+000 0000 0000 0000 00000 - 0000 0000 0000 0000 0000 0000 0000 0000 0111 1001 1010 0101 0101 1011 1000
+
+******** 7 ième tours ************
+
 initiale
 1111 0011 0100 1010 1011 0111
 
@@ -163,6 +197,6 @@ initiale
                                                    19 18  17  16
 */
 
-void offset(uint80_t *K, int p)
+void offset(main_key *K, int p)
 {   
 }

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "const.h"
-#include "uint80_t.h"
+#include "main_key.h"
 
 /**
  * @brief boxS do substitution of bits
@@ -21,5 +21,14 @@ uint32_t boxS(uint32_t state);
  * @return uint32_t variable permuted.
  */
 uint32_t permute(uint32_t state);
+
+/**
+ * @brief Encrypt the message m using the key K
+ * 
+ * @param K main key
+ * @param m message
+ * @return uint32_t message encrypted 
+ */
+uint32_t encrypt(uint32_t m, uint32_t K);
 
 #endif

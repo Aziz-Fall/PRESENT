@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 /**
- * @brief data is a struct that store
+ * @brief data is a struct that stores
  * a pair message, key and two arrays 
  * encrypt_m and decrypt_m that contain the 
  * encryption of message and the 
@@ -25,6 +25,16 @@ typedef struct data_attack
     uint32_t *encrypt_m;
     uint32_t *decrypt_e;
 } data_attack;
+
+/**
+ * @brief key_pair is a struct that 
+ * stores a key pair.
+ */
+typedef struct key_pair
+{
+    uint32_t k1;
+    uint32_t k2;
+} key_pair;
 
 
 /**
@@ -49,6 +59,19 @@ data_attack *init_data_attack(uint32_t m, uint32_t e);
  */
 void generate(data_attack *attack);
 
+/**
+ * @brief free all memories allocated.
+ * 
+ * @param attack 
+ */
 void free_data_attack(data_attack *attack);
+
+/**
+ * @brief Get the key pair 
+ * 
+ * @param attack 
+ * @return key_pair 
+ */
+key_pair get_key_pair(data_attack *attack);
 
 #endif

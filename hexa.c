@@ -1,45 +1,97 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void fusion(int tab[], int debut, int milieu, int fin)
+{
+    int n1 = milieu - debut + 1;
+    int n2 = fin - milieu;
+
+    int G[n1], D[n2];
+
+    for (int i = 0; i < n1; i++)
+    G[i] = tab[debut + i];
+
+    for (int j = 0; j < n2; j++)
+    D[j] = tab[milieu + 1 + j];
+    
+    // maintient trois pointeurs, un pour chacun des deux tableaux et un pour
+    // maintenir l'index actuel du tableau trié final
+    int i, j, k;
+    i = 0;
+    j = 0;
+    k = debut;
+
+    while (i < n1 && j < n2)
+    {
+        if (G[i] <= D[j])
+        {
+            tab[k] = G[i];
+            i++;
+        }
+        else
+        {
+            tab[k] = D[j];
+            j++;
+        }
+        k++;
+    }   
+    // Copiez tous les éléments restants du tableau non vide
+    while (i < n1)
+    {
+        tab[k] = G[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        tab[k] = D[j];
+        j++;
+        k++;
+    }
+}
+    
+    // Tri par fusion
+void triFusion(int tab[], int debut, int fin)
+{
+    if (debut < fin)
+    {
+        // Trouvez le point milieu pour diviser le tableau en deux moitiés
+        int m = (debut + fin) / 2;
+        triFusion(tab, debut, m);
+        triFusion(tab, m + 1, fin);
+        // Fusionnez les deux moitiés triées
+        fusion(tab, debut, m, fin);
+    }
+}
+
+void afficher(int tab[], int n)
+{
+    for (int i = 0; i < n; i++)
+        printf("%d ", tab[i]);
+    printf("\n");
+}
+int search_key(int tab[], uint32_t c, uint32_t begin, uint32_t end)
+{
+    uint32_t middle = (begin + end) / 2;
+    if(tab[middle] == c ) return middle;
+    else if ( c > tab[middle]) return search_key(tab, c, middle, end);
+    else if ( c <= tab[middle]) return search_key(tab, c, begin, middle);
+
+    if( middle == 0)
+        return -1;
+}
+
 int main()
 {
-    u_int8_t u = 128;
-    int pos[24] = { 0x1,      0x2,      0x4,      0x8, 
-                    0x10,     0x20,     0x40,     0x80,
-                    0x100,    0x200,    0x400,    0x800,
-                    0x1000,   0x2000,   0x4000,   0x8000,
-                    0x10000,  0x20000,  0x40000,  0x80000,
-                    0x100000, 0x200000, 0x400000, 0x800000
-                    };
-
-    printf("----- %d \n", u >> 7);
-    int div[6] = { 0xf, 0xf0, 0xf00, 0xf000, 0xf0000, 0xf00000};
+    int tab[] = {64, 25, 12, 22, 11};
+    int n = 5;
     
-    int s[16] = {
-                 0xc, 0x5, 0x6, 0xb,
-                 0x9, 0x0, 0xa, 0xd,
-                 0x3, 0xe, 0xf, 0x8,
-                 0x4, 0x7, 0x1, 0x2
-                };
-
-    unsigned int p = 0;
-    int b = 5337;
-
-    // s: substitution
-    for( int i = 0; i < 16; i++){
-        int c = (b & pos[i]) >> i;
-        p = p | (c << s[i]);
-        printf("pos[%d] = %d, %u\n", i, pos[i], pos[i] );
-    }
-    // s-1: reciproque de s
-    printf(" p = %d \n", p);
-    int d = 0;
-    for( int i = 0; i < 16; i++){
-        int c = (p & pos[s[i]]) >> s[i];
-        d = d | (c << i); 
-    }
-
-    printf(" d = %d \n", d);
+    triFusion(tab, 0, n - 1);
+    
+    printf(" ser:%d\n" ,search_key(tab, 0, 0, 4));
+    printf("Tableau trié: \n");
+    afficher(tab, n);
 
     return 0;
 }

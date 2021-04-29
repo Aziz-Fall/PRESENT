@@ -28,9 +28,9 @@ int main(int argc, char const *argv[])
 
     printf("attack-> m: %d, e: %d\n", attack->m, attack->e);
     generate(attack);
-    printf("encrypt[%d]: %x | decrypt[%d]: %x\n", 0, attack->encrypt_m[0], 0, attack->decrypt_e[0]);
-    printf("encrypt[%d]: %x | decrypt[%d]: %x\n", 0x3e8, attack->encrypt_m[0x3e8], 0x3e8, attack->decrypt_e[0x3e8]);
-    printf("encrypt[%d]: %x | decrypt[%d]: %x\n", 0x186a0, attack->encrypt_m[0x186a0], 0x186a0, attack->decrypt_e[0x186a0]);
+    printf("encrypt[%d]: %6x | decrypt[%d]: %6x\n", 0, attack->encrypt_m[0], 0, attack->decrypt_e[0]);
+    printf("encrypt[%d]: %6x | decrypt[%d]: %6x\n", 0x3e8, attack->encrypt_m[0x3e8], 0x3e8, attack->decrypt_e[0x3e8]);
+    printf("encrypt[%d]: %6x | decrypt[%d]: %6x\n", 0x186a0, attack->encrypt_m[0x186a0], 0x186a0, attack->decrypt_e[0x186a0]);
     
 
     free_data_attack(attack);

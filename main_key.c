@@ -30,7 +30,7 @@ void init_sub_key(main_key *K)
   }
 }
 
-main_key *init()
+main_key *init_key(uint32_t K)
 {
     main_key *key = malloc(sizeof(main_key));
 
@@ -39,6 +39,24 @@ main_key *init()
         perror("Echec allocation :(\n");
         exit(1);
     }
+
+    for( uint8_t i = 0; i < 20; i++ )
+    {
+        if( i < 6 )
+        {
+            uint4_t u;
+            key->tab[i].b = (WORDS[5 - i] & K) >> ((5 - i) * 4);;        }
+        else 
+        {
+            key->tab[i].b = 0x0;
+        }
+        if( i < 12)
+        {
+          key->sub_key[i] = 0x0;
+        }
+    }
+
+    init_sub_key(key);
 
     return key;
 }
@@ -51,24 +69,6 @@ void print_key(main_key int80)
     }
 }
 
-void init_key(uint32_t K, main_key *int80)
-{
-    for( uint8_t i = 0; i < 20; i++ )
-    {
-        if( i < 6 )
-        {
-            uint4_t u;
-            int80->tab[i].b = (WORDS[5 - i] & K) >> ((5 - i) * 4);;        }
-        else 
-        {
-            int80->tab[i].b = 0x0;
-        }
-        if( i < 12)
-        {
-          int80->sub_key[i] = 0x0;
-        }
-    }
-}
 
 void updateKey(main_key *K, int i)
 {

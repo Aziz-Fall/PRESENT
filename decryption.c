@@ -5,8 +5,8 @@ uint32_t reverse_permutation(uint32_t state)
 {
     uint32_t reverse_state = 0;
     for( uint8_t i = 0; i < 24; i++){
-        int c = (state & POS[PERM[i]]) >> PERM[i];
-         reverse_state |= (c << i); 
+        int c = (state & POS[i]) >> i;
+        reverse_state |= (c << REV_PERM[i]); 
     }
     return reverse_state;
 }
@@ -20,4 +20,18 @@ uint32_t reverse_substitution(uint32_t state)
         reverse_state |= REV_SUBS[word] << (i * 4);
     }
     return reverse_state;
+}
+
+uint32_t decrypt(uint32_t c, uint32_t subs_key[])
+{   
+    uint32_t state = c;
+    state ^= subs_key[11];
+    for( int i = 10; i > 0; i--)
+    {
+        state = reverse_permutation(state);
+        state = reverse_substitution(state);
+        state ^= subs_key[i];
+    }
+
+    return state;
 }

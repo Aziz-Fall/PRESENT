@@ -28,20 +28,13 @@ typedef struct main_key
 
 }main_key;
 
-/**
- * @brief init the array tab by putting 
- * all bits of K tab
- * 
- * @param K master key
- * @param int80 
- */
-void init_key(uint32_t K, main_key *int80);
 
 /**
- * @brief Allocate a memory for type main_key;
- * @return main_key* 
+ * @brief init the master key and his 
+ * subs keys. 
+ * @param K master key
  */
-main_key *init();
+main_key *init_key(uint32_t K);
 
 /**
  * @brief print each value of the array 

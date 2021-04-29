@@ -33,7 +33,14 @@ extern const uint16_t REV_SUBS[16];
  * each cage of table contains the position
  * of the bit to permute.
  */
-extern const uint8_t PERM[24];
+extern const uint16_t PERM[24];
+
+/**
+ * @brief REV_PERM is an array of reverse
+ * of permutation each cage of table contains the position
+ * of the bit to permute.
+ */
+extern const uint16_t REV_PERM[24];
 
 /**
  * @brief POS is an array of bits position

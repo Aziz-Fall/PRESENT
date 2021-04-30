@@ -4,6 +4,26 @@
 #include <time.h>
 #include <stdbool.h>
 
+void red() 
+{
+  printf("\033[1;31m");
+}
+
+void green()
+{
+  printf("\033[0;32m");
+}
+
+void blue()
+{
+  printf("\033[0;34m");
+}
+
+void reset() 
+{
+  printf("\033[0m");
+}
+
 void fusion(uint32_t tab[], int begin, int middle, int end)
 {
     int n1 = middle - begin + 1;
@@ -103,23 +123,36 @@ data_attack *init_data_attack(uint32_t m, uint32_t e)
     return attack;
 }
 
+uint32_t search(uint32_t tab[], uint32_t c)
+{
+    for( uint32_t i = 0; i < 0xffffff; i++)
+    {
+        if( c == tab[i])
+            return i;
+    }
 
-void generate(data_attack *attack)
+    return -1;
+} 
+
+key_pair attacks(data_attack *attack)
 {
     time_t begin, end;
+    key_pair k1_2;
     begin = time(NULL);
     for( uint32_t i = 0x0; i < 0xffffff; i++ )
     {
         attack->encrypt_m[i] = encrypt(attack->m, i);
         attack->decrypt_e[i] = decrypt(attack->e, i);
     }
-    triFusion(attack->decrypt_e, 0, (0xffffff - 1));
-    triFusion(attack->encrypt_m, 0, (0xffffff - 1));
-    end = time(NULL);
-    unsigned long secondes = (unsigned long) difftime( end, begin );
-    printf( "Finished in %ld sec\n", secondes ); 
-    
 
+    k1_2 = get_key_pair(attack);
+
+    end = time(NULL);
+
+    unsigned long secondes = (unsigned long) difftime( end, begin );
+    k1_2.times = secondes;
+    
+    return k1_2;
 }
 
 void free_data_attack(data_attack *attack)
@@ -129,22 +162,92 @@ void free_data_attack(data_attack *attack)
     free(attack);
 }
 
+/**
+ * @brief search a corresponding key in the array tab.
+ * the algrithme used, searches the key in half of the 
+ * array each round.So it do log(n) round to search a key.
+ * 
+ * @param tab array 
+ * @param c encrypted message
+ * @param begin begin array
+ * @param end end array
+ * @return uint32_t result
+ */
+uint32_t search_key(uint32_t tab[], uint32_t c, uint32_t begin, uint32_t end)
+{
+    uint32_t middle = (begin + end) / 2;
+
+    if( middle == 0 && tab[middle] != c) return -1;
+    else if(tab[middle] == c ) return middle;
+    else if ( c > tab[middle] && c < tab[end]) return -1;
+    else if ( c > tab[middle] && c > tab[end]) return -1;
+    else if ( c > tab[middle] ) return search_key(tab, c, middle, end);
+    else if ( c <= tab[middle] ) return search_key(tab, c, begin, middle);
+    
+    return -1;
+}
+
 key_pair get_key_pair(data_attack *attack)
 {
     key_pair k1_2;
-    k1_2.k1 = 0;
-    k1_2.k2 = 0;
-
+    k1_2.k1 = -1;
+    k1_2.k2 = -1;
+    for( uint32_t i = 0; i < 0xffffff; i++ )
+    {
+        uint32_t result = 0;
+        result = search(attack->decrypt_e, attack->encrypt_m[i]);
+        if( result != -1 )
+        {
+            k1_2.k1 = i;
+            k1_2.k2 = result;
+            return k1_2;
+        }
+    }
 
     return k1_2;
 }
 
-int search_key(uint32_t tab[], uint32_t c, uint32_t begin, uint32_t end)
+void display_key_pair(key_pair k, data_attack *a)
 {
-    uint32_t middle = (begin + end) / 2;
-    if(tab[middle] == c ) return middle;
-    else if ( c > tab[middle]) return search_key(tab, c, middle, end);
-    else if ( c <= tab[middle]) return search_key(tab, c, begin, middle);
-
-    return -1;
+    green();
+    printf("**********************************************************\033[0;32m\n");
+    printf("------------------      KEYS FOUNDED    ------------------\033[0;32m\n");
+    printf("**********************************************************\033[0;32m\n\n");
+    reset();
+    printf("(");
+    blue();
+    printf("m");
+    reset();
+    printf(", ");
+    red();
+    printf("k1");
+    reset();
+    printf(")-(");
+    blue();
+    printf("%6x", a->m);
+    reset();
+    printf(", ");
+    red();
+    printf("%6x", k.k1);
+    reset();
+    printf(" ) | (");
+    blue();
+    printf("c");
+    reset();
+    printf(", ");
+    red();
+    printf("k2");
+    reset();
+    printf(")-(");
+    blue();
+    printf("%6x", a->e);
+    reset();
+    printf(", ");
+    red();
+    printf("%6x)\n\n", k.k2);
+    reset();
+    printf( "Execution time to find the keys: %u sec\n", k.times); 
+    green();
+    printf("**********************************************************\033[0;32m\n");
+    reset();
 }

@@ -1,18 +1,25 @@
 #include "decryption.h"
 #include "encryption.h"
 #include "attack.h"
+/**
+ * (m1,c1) = (8a5c19, 7cc9ee) 
+ * (m2,c2) = (cfdbd2,cc89f3)
+ * 
+ * dc415c, f914c6
+ */
+
 
 int main(int argc, char const *argv[])
 {
     // printf("------------------------------------------\n");
     // printf("--------------- ENCRYPTION ---------------\n");
     // printf("------------------------------------------\n");
-    // uint32_t c1 = encrypt(0x000000, 0x000000);
-    // uint32_t c2 = encrypt(0xffffff, 0x000000);
+    // uint32_t c1 = encrypt(0x8a5c19, 0x36c8);
+    // uint32_t c2 = encrypt(c1, 0x3f967c);
     // uint32_t c3 = encrypt(0x000000, 0xffffff);
     // uint32_t c4 = encrypt(0xf955b9, 0xd1bd2d);
-    // printf(" encrypt m: %6x, k: %6x, c: %6x\n", 0x000000, 0x000000, c1);
-    // printf(" encrypt m: %6x, k: %6x, c: %6x\n", 0xffffff, 0x000000, c2);
+    // printf(" encrypt m: %6x, k: %6x, c: %6x\n", 0x8a5c19, 0x36c8, c1);
+    // printf(" encrypt m: %6x, k: %6x, c: %6x\n", c1, 0x3f967c, c2);
     // printf(" encrypt m: %6x, k: %6x, c: %6x\n", 0x000000, 0xffffff, c3);
     // printf(" encrypt m: %6x, k: %6x, c: %6x\n", 0xf955b9, 0xd1bd2d, c4);
     // printf("------------------------------------------\n");
@@ -24,14 +31,10 @@ int main(int argc, char const *argv[])
     // printf(" decrypt c: %6x, k: %6x, d: %6x\n", c4, 0xd1bd2d, decrypt(c4, 0xd1bd2d));
     // printf("------------------------------------------\n");
 
-    data_attack *attack = init_data_attack(0x0, 0x0);
+    data_attack *attack = init_data_attack(0xcfdbd2, 0xcc89f3);
+    key_pair k1_2 = attacks(attack);
 
-    printf("attack-> m: %d, e: %d\n", attack->m, attack->e);
-    generate(attack);
-    printf("encrypt[%d]: %6x | decrypt[%d]: %6x\n", 0, attack->encrypt_m[0], 0, attack->decrypt_e[0]);
-    printf("encrypt[%d]: %6x | decrypt[%d]: %6x\n", 0x3e8, attack->encrypt_m[0x3e8], 0x3e8, attack->decrypt_e[0x3e8]);
-    printf("encrypt[%d]: %6x | decrypt[%d]: %6x\n", 0x186a0, attack->encrypt_m[0x186a0], 0x186a0, attack->decrypt_e[0x186a0]);
-    
+    display_key_pair(k1_2, attack);
 
     free_data_attack(attack);
     return 0;

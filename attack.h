@@ -28,12 +28,14 @@ typedef struct data_attack
 
 /**
  * @brief key_pair is a struct that 
- * stores a key pair.
+ * stores a key pair and 
+ * execution time to find the keys
  */
 typedef struct key_pair
 {
     uint32_t k1;
     uint32_t k2;
+    uint32_t times;
 } key_pair;
 
 
@@ -48,16 +50,14 @@ typedef struct key_pair
 data_attack *init_data_attack(uint32_t m, uint32_t e);
 
 /**
- * @brief Encrypt the message and decrypt 
- * the encrypted message with all the keys 
- * between [0 - 0xffffff] and store the 
- * result in the arrays that are in 
- * the variable attack
- *
+ * @brief Generates array of encryption and decryption
+ * shorts them by using algorithm shorting by fusion 
+ * and search an intersection between the arrays.
+ * 
  * @param attack struct that contains data 
  * using to attack 
  */
-void generate(data_attack *attack);
+key_pair attacks(data_attack *attack);
 
 /**
  * @brief free all memories allocated.
@@ -73,5 +73,14 @@ void free_data_attack(data_attack *attack);
  * @return key_pair 
  */
 key_pair get_key_pair(data_attack *attack);
+
+/**
+ * @brief display the key pair
+ * 
+ * @param k key pair
+ * @param a data
+ * @param times Execution time to find the keys
+ */
+void display_key_pair(key_pair k, data_attack *a);
 
 #endif

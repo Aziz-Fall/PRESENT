@@ -74,12 +74,15 @@ void afficher(int tab[], int n)
 int search_key(int tab[], uint32_t c, uint32_t begin, uint32_t end)
 {
     uint32_t middle = (begin + end) / 2;
-    if(tab[middle] == c ) return middle;
-    else if ( c > tab[middle]) return search_key(tab, c, middle, end);
-    else if ( c <= tab[middle]) return search_key(tab, c, begin, middle);
-
-    if( middle == 0)
-        return -1;
+    printf("middle: %d\n", middle);
+    if( middle == 0 && tab[middle] != c) return -1;
+    else if(tab[middle] == c ) return middle;
+    else if ( c > tab[middle] && c < tab[end] ) return -1;
+    else if ( c > tab[middle] && c > tab[end] ) return -1;
+    else if ( c > tab[middle] ) return search_key(tab, c, middle, end);
+    else if ( c <= tab[middle] ) return search_key(tab, c, begin, middle);
+    
+    return -1;
 }
 
 int main()

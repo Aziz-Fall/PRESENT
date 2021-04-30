@@ -209,11 +209,6 @@ key_pair get_key_pair(data_attack *attack)
 
 void display_key_pair(key_pair k, data_attack *a)
 {
-    green();
-    printf("**********************************************************\033[0;32m\n");
-    printf("------------------      KEYS FOUNDED    ------------------\033[0;32m\n");
-    printf("**********************************************************\033[0;32m\n\n");
-    reset();
     printf("(");
     blue();
     printf("m");
@@ -246,8 +241,7 @@ void display_key_pair(key_pair k, data_attack *a)
     red();
     printf("%6x)\n\n", k.k2);
     reset();
-    printf( "Execution time to find the keys: %u sec\n", k.times); 
     green();
-    printf("**********************************************************\033[0;32m\n");
+    printf( "Execution time to find the keys: %u sec\n\n", k.times); 
     reset();
 }

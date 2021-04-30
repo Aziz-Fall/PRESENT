@@ -1,5 +1,5 @@
 run: main 
-	./main 
+	./main 8a5c19 7cc9ee cfdbd2 cc89f3
 
 main: encryption.o main.o decryption.o const.o main_key.o attack.o
 	gcc	*.o -o main -O3 

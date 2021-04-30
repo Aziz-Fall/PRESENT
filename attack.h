@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void red();
+void green();
+void blue();
+void reset();
 /**
  * @brief data is a struct that stores
  * a pair message, key and two arrays 

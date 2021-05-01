@@ -51,14 +51,6 @@ void print_key(main_key int80);
 void rotate_bits(main_key *K);
 
 /**
- * @brief shift the key to p position
- * 
- * @param K key
- * @param p position 
- */
-void offset(main_key *K, int p);
-
-/**
  * @brief Update the master key after a lap
  * @param K master key
  * @param i lap

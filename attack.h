@@ -39,7 +39,7 @@ typedef struct key_pair
 {
     uint32_t k1;
     uint32_t k2;
-    uint32_t times;
+    double times;
 } key_pair;
 
 

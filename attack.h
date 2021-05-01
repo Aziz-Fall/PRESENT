@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 void red();
 void green();
@@ -55,8 +56,7 @@ data_attack *init_data_attack(uint32_t m, uint32_t e);
 
 /**
  * @brief Generates array of encryption and decryption
- * shorts them by using algorithm shorting by fusion 
- * and search an intersection between the arrays.
+ * and founds the key pair in the same time
  * 
  * @param attack struct that contains data 
  * using to attack 
@@ -71,14 +71,6 @@ key_pair attacks(data_attack *attack);
 void free_data_attack(data_attack *attack);
 
 /**
- * @brief Get the key pair 
- * 
- * @param attack 
- * @return key_pair 
- */
-key_pair get_key_pair(data_attack *attack);
-
-/**
  * @brief display the key pair
  * 
  * @param k key pair
@@ -86,5 +78,16 @@ key_pair get_key_pair(data_attack *attack);
  * @param times Execution time to find the keys
  */
 void display_key_pair(key_pair k, data_attack *a);
+
+/**
+ * @brief Check if the key pair founds 
+ * is the good key
+ * 
+ * @param k key pair
+ * @param a attack data
+ * @return true 
+ * @return false 
+ */
+bool check_key(key_pair k, data_attack *a);
 
 #endif

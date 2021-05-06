@@ -39,5 +39,21 @@ uint32_t encrypt(uint32_t m, uint32_t sub_key[])
     return state;
 }
 
+uint32_t encrypt_with_main_key(uint32_t m, uint32_t key)
+{
+    main_key *K = init_key(key);
+    uint32_t state = m;
+    for( int i = 1; i < 11; i++)
+    {        
+        state ^= K->sub_key[i];
+        state = boxS(state);
+        state = permute(state);
+    }
+
+    state ^= K->sub_key[11];
+    
+    return state;
+}
+
 
 

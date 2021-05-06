@@ -84,14 +84,15 @@ void free_data_attack(data_attack *attack);
 void display_key_pair(key_pair k, data_attack *a);
 
 /**
- * @brief Check if the key pair founds 
+ * @brief Check if the key pair (k1, k2) founds 
  * is the good key
  * 
- * @param k key pair
+ * @param k1 key 
+ * @param k2 key 
  * @param a attack data
  * @return true 
  * @return false 
  */
-bool check_key(key_pair k, data_attack *a);
+bool check_key(uint32_t k1, uint32_t k2, data_attack *a);
 
 #endif

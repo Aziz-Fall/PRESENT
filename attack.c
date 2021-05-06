@@ -67,14 +67,17 @@ data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2
         printf("Failure allocation ENCRYPT :(\n");
         exit(2);
     }
-
-    for( uint32_t i = 0; i < 0xffffff; i++ )
+  
+    for( uint32_t i = 0x0; i <0xffffff; i++ )
     {
         main_key *K = init_key(i);
+
         attack->encrypt_m1[i] = encrypt(attack->m1, K->sub_key);
-        attack->decrypt_e1[i] = decrypt(attack->e1, K->sub_key);
         attack->encrypt_m2[i] = encrypt(attack->m2, K->sub_key);
-        attack->decrypt_e2[i] = decrypt(attack->e2, K->sub_key);
+        
+        attack->decrypt_e1[decrypt(attack->e1, K->sub_key)] = i; 
+        attack->decrypt_e2[decrypt(attack->e2, K->sub_key)] = i; 
+       
         free(K);
     }
 
@@ -84,29 +87,36 @@ data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2
 key_pair attacks(data_attack *attack)
 {
     key_pair k1_2;
-    // for( uint32_t i = 0x0; i < 0xffffff; i++ )
-    // {
-    // }
+    for( uint32_t i = 0x0; i < 0xffffff; i++ )
+    {
+        uint32_t r1 = attack->decrypt_e1[attack->encrypt_m1[i]];
+        uint32_t r2 = attack->decrypt_e2[attack->encrypt_m2[i]];
+        if( r2 == r1 )
+        {   
+            if( check_key(i, r1, attack) )
+            {    
+                k1_2.k1 = i;
+                k1_2.k2 = r1;
+                printf(" (k1, k2) -- (%6x, %6x)\n", i, r1);
+            }
+        }
+    }
 
     return k1_2;
 }
 
-bool check_key(key_pair k, data_attack *a)
-{
-    // uint32_t c1 = encrypt(a->m1, k.k1);
-    // uint32_t c2 = encrypt(c1, k.k2);
-    // uint32_t c3 = encrypt(a->m2, k.k1);
-    // uint32_t c4 = encrypt(c3, k.k2);
-    // if( c2 == a->e1 )
-    // {
-    //     green();
-    //     printf("* Checking keys ...\n\n");
-    //     reset();
-    //     printf(" encrypt      \033[0;34m m1\033[0m:\033[0;34m %6x\033[0m, k1: %6x, c': %6x\n", a->m1, k.k1, c1);
-    //     printf(" encrypt (m = c'): %6x, k2: %6x,\033[0;34m c1\033[0m: \033[0;34m%6x\033[0m\n\n", c1, k.k2, c2);
-    //     return true;
-    // }
-    return false;
+bool check_key(uint32_t k_1, uint32_t k_2, data_attack *a)
+{   
+    main_key *k1 = init_key(k_1);
+    main_key *k2 = init_key(k_2);
+
+    uint32_t c1 = encrypt(a->m1, k1->sub_key);
+    uint32_t c2 = encrypt(c1, k2->sub_key);
+    uint32_t c3 = encrypt(a->m2, k1->sub_key);
+    uint32_t c4 = encrypt(c3, k2->sub_key);
+    free(k1);
+    free(k2);
+    return ( c2 == a->e1 && c4 == a->e2 ) ? true : false;
 }
 void free_data_attack(data_attack *attack)
 {
@@ -121,7 +131,7 @@ void display_key_pair(key_pair k, data_attack *a)
 {
     printf("(");
     blue();
-    printf("m");
+    printf("m1");
     reset();
     printf(", ");
     red();
@@ -137,7 +147,7 @@ void display_key_pair(key_pair k, data_attack *a)
     reset();
     printf(" ) | (");
     blue();
-    printf("c");
+    printf("c1");
     reset();
     printf(", ");
     red();
@@ -151,7 +161,36 @@ void display_key_pair(key_pair k, data_attack *a)
     red();
     printf("%6x)\n\n", k.k2);
     reset();
-    green();
-    printf( "Execution time to find the keys: %f sec\n\n", k.times); 
+    printf("(");
+    blue();
+    printf("m2");
+    reset();
+    printf(", ");
+    red();
+    printf("k1");
+    reset();
+    printf(")-(");
+    blue();
+    printf("%6x", a->m2);
+    reset();
+    printf(", ");
+    red();
+    printf("%6x", k.k1);
+    reset();
+    printf(" ) | (");
+    blue();
+    printf("c2");
+    reset();
+    printf(", ");
+    red();
+    printf("k2");
+    reset();
+    printf(")-(");
+    blue();
+    printf("%6x", a->e2);
+    reset();
+    printf(", ");
+    red();
+    printf("%6x)\n\n", k.k2);
     reset();
 }

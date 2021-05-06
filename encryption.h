@@ -31,4 +31,6 @@ uint32_t permute(uint32_t state);
  */
 uint32_t encrypt(uint32_t m, uint32_t sub_key[]);
 
+uint32_t encrypt_with_main_key(uint32_t m, uint32_t key);
+
 #endif

@@ -29,6 +29,6 @@ uint32_t permute(uint32_t state);
  * @param m message
  * @return uint32_t message encrypted 
  */
-uint32_t encrypt(uint32_t m, uint32_t key);
+uint32_t encrypt(uint32_t m, uint32_t sub_key[]);
 
 #endif

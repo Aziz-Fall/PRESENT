@@ -25,10 +25,14 @@ void reset();
  */
 typedef struct data_attack
 {
-    uint32_t m;
-    uint32_t e;
-    uint32_t *encrypt_m;
-    uint32_t *decrypt_e;
+    uint32_t m1;
+    uint32_t e1;
+    uint32_t m2;
+    uint32_t e2;
+    uint32_t *encrypt_m1;
+    uint32_t *decrypt_e1;
+    uint32_t *encrypt_m2;
+    uint32_t *decrypt_e2;
 } data_attack;
 
 /**
@@ -52,7 +56,7 @@ typedef struct key_pair
  * @param e encrypted message
  * @return data_attack 
  */
-data_attack *init_data_attack(uint32_t m, uint32_t e);
+data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2);
 
 /**
  * @brief Generates array of encryption and decryption

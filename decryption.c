@@ -22,20 +22,16 @@ uint32_t reverse_substitution(uint32_t state)
     return reverse_state;
 }
 
-uint32_t decrypt(uint32_t c, uint32_t key)
+uint32_t decrypt(uint32_t c, uint32_t sub_key[])
 {   
-    main_key *K = init_key(key);
-
     uint32_t state = c;
-    state ^= K->sub_key[11];
+    state ^= sub_key[11];
     for( int i = 10; i > 0; i--)
     {
         state = reverse_permutation(state);
         state = reverse_substitution(state);
-        state ^= K->sub_key[i];
+        state ^= sub_key[i];
     }
-
-    free(K);
 
     return state;
 }

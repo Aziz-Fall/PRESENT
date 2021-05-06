@@ -1,6 +1,7 @@
 #include "decryption.h"
 #include "encryption.h"
 #include "attack.h"
+#include <time.h>
 
 int main(int argc, char const *argv[])
 {
@@ -19,22 +20,21 @@ int main(int argc, char const *argv[])
     printf("********************************************************\n");
     printf("** First key pair ... \n\n");
     reset();
-    data_attack *attack1 = init_data_attack(m1, c1);
-    key_pair k1_2 = attacks(attack1);
-    display_key_pair(k1_2, attack1);
+    time_t begin, end;
 
-    green();
-    printf("** Second key pair ...\n\n");
-    reset();
-    data_attack *attack2 = init_data_attack(m2, c2);
-    key_pair k = attacks(attack2);
-    display_key_pair(k, attack2);
+    begin = time(NULL);
 
+    data_attack *attack = init_data_attack(m1, c1, m2, c2);
+    key_pair k1_2 = attacks(attack);
+
+    end = time(NULL);
+
+    double secondes = difftime( end, begin );
+    printf("Time: %.3f sec\n", secondes);
     green();
     printf("********************************************************\n");
     reset();
 
-    free_data_attack(attack1);
-    free_data_attack(attack2);
+    free_data_attack(attack);
     return 0;
 }

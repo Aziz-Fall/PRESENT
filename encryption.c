@@ -24,20 +24,17 @@ uint32_t permute(uint32_t state)
     return final_state;
 }
 
-uint32_t encrypt(uint32_t m, uint32_t key)
+uint32_t encrypt(uint32_t m, uint32_t sub_key[])
 {
-    main_key *K = init_key(key);
     uint32_t state = m;
     for( int i = 1; i < 11; i++)
     {        
-        state ^= K->sub_key[i];
+        state ^= sub_key[i];
         state = boxS(state);
         state = permute(state);
     }
 
-    state ^= K->sub_key[11];
-
-    free(K);
+    state ^= sub_key[11];
     
     return state;
 }

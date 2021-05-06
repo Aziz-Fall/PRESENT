@@ -44,7 +44,8 @@ main_key *init_key(uint32_t K)
     {
         if( i < 6 )
         {
-            key->tab[i].b = (WORDS[5 - i] & K) >> ((5 - i) * 4);;        }
+            key->tab[i].b = (WORDS[5 - i] & K) >> ((5 - i) * 4);        
+        }
         else 
         {
             key->tab[i].b = 0x0;

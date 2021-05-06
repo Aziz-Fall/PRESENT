@@ -30,6 +30,6 @@ uint32_t reverse_substitution(uint32_t state);
  * @param key the master key
  * @return uint32_t message decrypted
  */
-uint32_t decrypt(uint32_t c, uint32_t key);
+uint32_t decrypt(uint32_t c, uint32_t sub_key[]);
 
 #endif

@@ -23,14 +23,12 @@ uint32_t boxS(uint32_t state);
 uint32_t permute(uint32_t state);
 
 /**
- * @brief Encrypt the message m using the key 
+ * @brief Encrypt the message m using the subs key
  * 
  * @param key master key
  * @param m message
  * @return uint32_t message encrypted 
  */
 uint32_t encrypt(uint32_t m, uint32_t sub_key[]);
-
-uint32_t encrypt_with_main_key(uint32_t m, uint32_t key);
 
 #endif

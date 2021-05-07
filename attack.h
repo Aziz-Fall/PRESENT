@@ -7,21 +7,32 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+/**
+ * @brief change the color of the 
+ * string on the output 
+ * 
+ */
 void red();
 void green();
 void blue();
 void reset();
+
+
 /**
  * @brief data is a struct that stores
- * a pair message, key and two arrays 
+ * a pair message, key and the arrays 
  * encrypt_m and decrypt_m that contain the 
  * encryption of message and the 
- * decryption of the key respectively.
+ * decryption of the ciphers respectively.
  * 
- * @param m clear message
- * @param e encrypted message
- * @param encrypt_m arrays 
- * @param decrypt_d arrays.
+ * @param m1 clear message
+ * @param e1 encrypted message
+ * @param m2 clear message
+ * @param e2 encrypted message
+ * @param encrypt_m1 array which contain the encrypted message m1
+ * @param decrypt_d1 array which contain the decrypted message c1
+ * @param encrypt_m2 array which contain the encrypted message m2
+ * @param decrypt_d2 array which contain the decrypted message c2
  */
 typedef struct data_attack
 {
@@ -38,29 +49,30 @@ typedef struct data_attack
 /**
  * @brief key_pair is a struct that 
  * stores a key pair and 
- * execution time to find the keys
  */
 typedef struct key_pair
 {
     uint32_t k1;
     uint32_t k2;
-    double times;
 } key_pair;
 
 
 /**
- * @brief Init the value of the message
- * and the key.
+ * @brief Initialize clear and encrypted message
+ *  and generates array of encryption and decryption
  * 
- * @param m clear message 
- * @param e encrypted message
+ * @param m1 clear message 
+ * @param e1 encrypted message
+ * @param m2 clear message 
+ * @param e2 encrypted message
  * @return data_attack 
  */
 data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2);
 
 /**
- * @brief Generates array of encryption and decryption
- * and founds the key pair in the same time
+ * @brief Search the collision between encrypted array 
+ * and decrypted array and return the key pair 
+ * founds
  * 
  * @param attack struct that contains data 
  * using to attack 

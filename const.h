@@ -7,7 +7,7 @@
 extern const __uint128_t BITS_PIVOTED; 
 
 /**
- * @brief WORDS is an array that contains 
+ * @brief WORDS is an array which contains 
  * a word of 4 bits of one and this bits 
  * are between positions 0 and 3, 4 and 7,
  * ..., 20 and 23.

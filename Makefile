@@ -1,3 +1,4 @@
+#(m1,c1) = (8a5c19, 7cc9ee) (m2,c2) = (cfdbd2,cc89f3)
 run: main 
 	./main 8a5c19 7cc9ee cfdbd2 cc89f3
  

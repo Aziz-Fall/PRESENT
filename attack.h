@@ -8,17 +8,6 @@
 #include <stdbool.h>
 
 /**
- * @brief change the color of the 
- * string on the output 
- * 
- */
-void red();
-void green();
-void blue();
-void reset();
-
-
-/**
  * @brief data is a struct that stores
  * a pair message, key and the arrays 
  * encrypt_m and decrypt_m that contain the 
@@ -47,17 +36,6 @@ typedef struct data_attack
 } data_attack;
 
 /**
- * @brief key_pair is a struct that 
- * stores a key pair and 
- */
-typedef struct key_pair
-{
-    uint32_t k1;
-    uint32_t k2;
-} key_pair;
-
-
-/**
  * @brief Initialize clear and encrypted message
  *  and generates array of encryption and decryption
  * 
@@ -77,7 +55,7 @@ data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2
  * @param attack struct that contains data 
  * using to attack 
  */
-key_pair attacks(data_attack *attack);
+void attacks(data_attack *attack);
 
 /**
  * @brief free all memories allocated.
@@ -85,15 +63,6 @@ key_pair attacks(data_attack *attack);
  * @param attack 
  */
 void free_data_attack(data_attack *attack);
-
-/**
- * @brief display the key pair
- * 
- * @param k key pair
- * @param a data
- * @param times Execution time to find the keys
- */
-void display_key_pair(key_pair k, data_attack *a);
 
 /**
  * @brief Check if the key pair (k1, k2) founds 

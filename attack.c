@@ -3,26 +3,6 @@
 #include "encryption.h"
 #include <stdbool.h>
 
-void red() 
-{
-  printf("\033[1;31m");
-}
-
-void green()
-{
-  printf("\033[0;32m");
-}
-
-void blue()
-{
-  printf("\033[0;34m");
-}
-
-void reset() 
-{
-  printf("\033[0m");
-}
-
 data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2)
 {
     data_attack *attack = malloc(sizeof(data_attack));
@@ -40,7 +20,8 @@ data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2
     attack->e2 = e2;
     attack->decrypt_e2 = NULL;
     attack->encrypt_m2 = NULL;
-
+    printf("-(m1, c1) ------ (%6x, %6x)\n", attack->m1, attack->e1);
+    printf("-(m2, c2) ------ (%6x, %6x)\n\n", attack->m2, attack->e2);
     attack->decrypt_e1 = malloc(sizeof(int) * 0xffffff);
     if( !attack->decrypt_e1 )
     {
@@ -84,25 +65,24 @@ data_attack *init_data_attack(uint32_t m1, uint32_t e1, uint32_t m2, uint32_t e2
     return attack;
 } 
 
-key_pair attacks(data_attack *attack)
+void attacks(data_attack *attack)
 {
-    key_pair k1_2;
+    uint32_t nb_keys_found = 0;
+
     for( uint32_t i = 0x0; i < 0xffffff; i++ )
     {
         uint32_t r1 = attack->decrypt_e1[attack->encrypt_m1[i]];
         uint32_t r2 = attack->decrypt_e2[attack->encrypt_m2[i]];
         if( r2 == r1 )
         {   
+            nb_keys_found++;
             if( check_key(i, r1, attack) )
             {    
-                k1_2.k1 = i;
-                k1_2.k2 = r1;
                 printf(" (k1, k2) -- (%6x, %6x)\n", i, r1);
             }
         }
     }
-
-    return k1_2;
+    printf("\n-Nb key pair founds: %d\n", nb_keys_found);
 }
 
 bool check_key(uint32_t k_1, uint32_t k_2, data_attack *a)
@@ -118,6 +98,7 @@ bool check_key(uint32_t k_1, uint32_t k_2, data_attack *a)
     free(k2);
     return ( c2 == a->e1 && c4 == a->e2 ) ? true : false;
 }
+
 void free_data_attack(data_attack *attack)
 {
     free(attack->decrypt_e1);
@@ -127,70 +108,3 @@ void free_data_attack(data_attack *attack)
     free(attack);
 }
 
-void display_key_pair(key_pair k, data_attack *a)
-{
-    printf("(");
-    blue();
-    printf("m1");
-    reset();
-    printf(", ");
-    red();
-    printf("k1");
-    reset();
-    printf(")-(");
-    blue();
-    printf("%6x", a->m1);
-    reset();
-    printf(", ");
-    red();
-    printf("%6x", k.k1);
-    reset();
-    printf(" ) | (");
-    blue();
-    printf("c1");
-    reset();
-    printf(", ");
-    red();
-    printf("k2");
-    reset();
-    printf(")-(");
-    blue();
-    printf("%6x", a->e1);
-    reset();
-    printf(", ");
-    red();
-    printf("%6x)\n\n", k.k2);
-    reset();
-    printf("(");
-    blue();
-    printf("m2");
-    reset();
-    printf(", ");
-    red();
-    printf("k1");
-    reset();
-    printf(")-(");
-    blue();
-    printf("%6x", a->m2);
-    reset();
-    printf(", ");
-    red();
-    printf("%6x", k.k1);
-    reset();
-    printf(" ) | (");
-    blue();
-    printf("c2");
-    reset();
-    printf(", ");
-    red();
-    printf("k2");
-    reset();
-    printf(")-(");
-    blue();
-    printf("%6x", a->e2);
-    reset();
-    printf(", ");
-    red();
-    printf("%6x)\n\n", k.k2);
-    reset();
-}
